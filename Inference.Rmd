@@ -1,0 +1,66 @@
+---
+title: "Basic inferential data analysis on ToothGrowth"
+output: pdf_document
+---
+
+##I. exploratory data analyses##  
+
+This is a study of the effect of vitamin C on tooth growth in guinea pigs. The raw data of this study comes from the ToothGrowth data - a dataset in the standard R library.   
+
+The data shows the length of odontoblasts (teeth) in each of 10 guinea pigs at each of three dose levels of Vitamin C (0.5, 1, and 2 mg) with each of two delivery methods (orange juice or ascorbic acid).
+
+The dataset has totally 60 observations on 3 variables:
+
+```{r}
+summary(ToothGrowth)
+```
+
+The following plot shows the relationship between tooth length and dose given by supplement types
+
+```{r}
+coplot(len ~ dose | supp, data = ToothGrowth, panel = panel.smooth, show.given = TRUE,
+       xlab = "ToothGrowth data: length vs dose, given type of supplement")
+```
+
+##II. T tests for two sample groups (VC and OJ)##  
+
+This analysis compares the differences of tooth length between two supplement types in each dose amount (0.5, 1.0 and 2.0 mg). Since the sample size of each test is small (10 for each group), T test and T confidence interval methods are used.
+
+**Definition**:  
+Mu-oj - The mean of tooth length using suppliment type OJ  
+Mu-vc - The mean of tooth length using suppliment type VC
+
+**Hypothesis**:  
+Null Hypothesis (Ho): Mu-oj = Mu-vc   |   Alternative Hypothesis (Ha): Mu-oj <> Mu-vc  
+
+**Assumption**: The samples from the OJ and VC group in each dose are independant; and population distribution of both groups are approximately normal. In other words, each subject (guinea pig) can only receive a supplement type in a specific dose (0.5, 1.0 or 2.0 mg).  
+
+###Test 1 (dose = 0.5) -###
+```{r}
+dose0.5 <- subset(ToothGrowth, dose == 0.5)
+t.test(len ~ supp, data = dose0.5, alternative="two.sided")
+```
+
+###Test 2 (dose = 1.0) -###
+```{r}
+dose1.0 <- subset(ToothGrowth, dose == 1.0)
+t.test(len ~ supp, data = dose1.0, alternative="two.sided")
+```
+
+###Test 3 (dose = 2.0) -###
+```{r}
+dose2.0 <- subset(ToothGrowth, dose == 2.0)
+t.test(len ~ supp, data = dose2.0, alternative="two.sided")
+```
+
+##III. Conclusion##
+
+We define the cut-off value (alpha) for the tests to be totally 5% (2.5% or 0.025 in each side).
+
+Test 1: 95% T confidence level is [1.719057 8.780943]. Expected difference in means 0 is NOT in that interval; and the p-value is 0.003179 which is smaller than 0.05. So **Ho is rejected**.  
+
+Test 2: 95% T confidence level is [2.802148 9.057852]. Expected difference in means 0 is NOT in that interval; and the p-value is 0.0005192 which is smaller than 0.05. So **Ho is rejected**.
+
+Test 3: 95% T confidence level is [-3.79807 3.63807]. Expected difference in means 0 IS in that interval; and the p-value is 0.5181 which is much greater than 0.05. So **Fail to reject Ho**.  
+
+Based on the test results, we conclude that when the amount of dose is small (less than 2.0 mg), using OJ is more effective for tooth growth. However, when the dose amount reaches 2.0 mg, there is not much difference between using OJ or VC.

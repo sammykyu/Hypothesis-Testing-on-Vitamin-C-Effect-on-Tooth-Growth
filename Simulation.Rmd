@@ -1,0 +1,57 @@
+---
+output:
+  pdf_document:
+    fig_crop: no
+---
+---
+title: "A simulation exercise"
+---  
+
+This is a study to show how close it is between the simulated centered value and the theorectical one in an exponentials distribution under the Central Limit Theorem (CLT).  
+
+Please note that in theory, both the mean and the standard deviation of an exponential distribution is 1/lambda, where lambda is the rate parameter. 
+
+Here we generate three distributions for random exponentials in mean, standard deviation (SD) and variance. We set the lambda to be 0.2 and generate 40 random exponentials. And then we get the average for the variable (e.g. SD) in which we are interested. We repeat this process 1000 times. Three histograms are plotted below to show the distributions.  
+
+
+```{r}
+lambda <- 0.2
+set.seed(1997)
+mns = NULL
+## get the distribution of 1000 averages of 40 random exponentials
+for (i in 1 : 1000) mns = c(mns, mean(rexp(40, lambda)))
+mymean <- round(mean(mns), digits=3)
+hist(mns, main="Histogram of the Means of Simulated Exponentials", xlab="Mean of Exponentials")
+abline(v = 1/lambda, col = "red", lwd = 2)
+abline(v = mymean, col = "blue", lwd = 2)
+legend("topright", legend = c(paste(c("Theoretical Mean",1/lambda), collapse = " = "),
+                              paste(c("Actual Mean", mymean), collapse = " = ")),
+       lty=c(1,1),lwd=c(2,2),col=c("red","blue"))
+
+sds = NULL
+## get the distribution of 1000 standard deviation of 40 random exponentials
+for (i in 1 : 1000) sds = c(sds, sd(rexp(40, lambda)))
+mysd <- round(mean(sds), digits=3)
+hist(sds, main="Histogram of the Standard Deviations of Simulated Exponentials",
+     xlab="SD of Exponentials")
+abline(v = 1/lambda, col = "red", lwd = 2)
+abline(v = mysd, col = "green", lwd = 2)
+legend("topright", legend = c(paste(c("Theoretical SD",1/lambda), collapse = " = "),
+                              paste(c("Actual SD", mysd), collapse = " = ")),
+       lty=c(1,1),lwd=c(2,2),col=c("red","green"))
+
+vars = NULL
+## get the distribution of 1000 variance of 40 random exponentials
+for (i in 1 : 1000) vars = c(vars, var(rexp(40, lambda)))
+myvar <- round(mean(vars), digits=3)
+hist(vars, main="Histogram of the Variances of Simulated Exponentials",
+     xlab="Variance of Exponentials")
+abline(v = (1/lambda)^2, col = "red", lwd = 2)
+abline(v = myvar, col = "cyan", lwd = 2)
+legend("topright", legend = c(paste(c("Theoretical Variance",(1/lambda)^2), collapse = " = "),
+                              paste(c("Actual Variance", myvar), collapse = " = ")),
+       lty=c(1,1),lwd=c(2,2),col=c("red","cyan"))
+```
+
+**Conclustion:**  
+As you can see, the distributions (means, standard deviations and variances) are approximately normal; and the centered values is very close to the theorectical ones. If we increase the sample size from 40 to like 1000, the distributions would be more normal.
